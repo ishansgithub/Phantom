@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const UsertMessageSchema = new mongoose.Schema({
+const UserMessageSchema = new mongoose.Schema({
     sender: { 
         ref: 'User', 
         required: true 
@@ -25,6 +25,6 @@ const UsertMessageSchema = new mongoose.Schema({
 });
 
 
-const Message = mongoose.model('UserMessage', UsertMessageSchema);
+const Message = mongoose.model('Message', UserMessageSchema);
 
 export default Message;
