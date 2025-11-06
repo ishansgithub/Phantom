@@ -300,7 +300,6 @@ const ChatRoom = () => {
         timestamp: new Date().toISOString(),
       };
       await socket.emit("send_message", messageData);
-      setMessages((prevMessages) => [...prevMessages, messageData]);
       setCurrentMessage("");
       // Message will be added via receive_message event listener
     }
