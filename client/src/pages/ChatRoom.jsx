@@ -534,7 +534,7 @@ const ChatRoom = () => {
 
         <div className="chat-panel w-full max-w-3xl retro-texture">
           <div className="w-full flex justify-center">
-            <div className="w-full flex justify-center mb-2">
+            {/* <div className="w-full flex justify-center mb-2">
               <div className="retro-card px-4 py-2 flex items-center gap-3 retro-texture">
                 <h2 className="text-sm retro-text font-semibold tracking-wide" style={{ color: 'var(--retro-tan)' }}>
                   {roomId || "Group Chat"}
@@ -543,7 +543,7 @@ const ChatRoom = () => {
                   {onlineUsers.length} online
                 </div>
               </div>
-            </div>
+            </div> */}
             <main
               ref={messageContainerRef}
               className="flex-grow w-full p-4 pb-24 h-[calc(100vh-240px)] overflow-y-auto no-scrollbar"
