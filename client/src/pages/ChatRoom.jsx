@@ -34,9 +34,6 @@ const ChatRoom = () => {
   const localStreamRef = useRef(null);
   const remoteAudioRef = useRef(null);
   const messageContainerRef = useRef(null);
-  const userListRef = useRef(null);
-  const userListButtonRef = useRef(null);
-  const [dropdownPosition, setDropdownPosition] = useState({ right: 0, top: 0 });
 
   const toggleMute = useCallback(async () => {
     try {
@@ -91,40 +88,6 @@ const ChatRoom = () => {
   useEffect(() => {
     scrollToBottom("smooth");
   }, [messages, oldMessagesLoaded, scrollToBottom]);
-
-  // Close user list when clicking outside and update position
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (userListRef.current && !userListRef.current.contains(event.target) && 
-          userListButtonRef.current && !userListButtonRef.current.contains(event.target)) {
-        setIsUserListVisible(false);
-      }
-    };
-
-    const updateDropdownPosition = () => {
-      if (userListButtonRef.current) {
-        const rect = userListButtonRef.current.getBoundingClientRect();
-        const navRect = userListButtonRef.current.closest('nav')?.getBoundingClientRect();
-        if (navRect) {
-          setDropdownPosition({
-            right: window.innerWidth - rect.right,
-            top: navRect.bottom + 8
-          });
-        }
-      }
-    };
-
-    if (isUserListVisible) {
-      updateDropdownPosition();
-      window.addEventListener('resize', updateDropdownPosition);
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      window.removeEventListener('resize', updateDropdownPosition);
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isUserListVisible]);
 
   useEffect(() => {
     if (!username) return;
@@ -300,8 +263,8 @@ const ChatRoom = () => {
         timestamp: new Date().toISOString(),
       };
       await socket.emit("send_message", messageData);
+      setMessages((prevMessages) => [...prevMessages, messageData]);
       setCurrentMessage("");
-      // Message will be added via receive_message event listener
     }
   };
 
@@ -407,11 +370,8 @@ const ChatRoom = () => {
 
   if (isLoading) {
     return (
-      <div className="retro-landing flex flex-col items-center justify-center text-amber-200 h-screen">
-        <div className="scanlines fixed inset-0 pointer-events-none"></div>
-        <div className="retro-grid fixed inset-0 opacity-20"></div>
-        <div className="retro-bg fixed inset-0"></div>
-        <h1 className="relative z-10 text-2xl text-amber-200 animate-pulse font-mono">CONNECTING...</h1>
+      <div className="flex flex-col items-center justify-center text-white h-screen retro-texture" style={{ backgroundColor: 'var(--retro-black)' }}>
+        <h1 className="text-2xl retro-text animate-pulse" style={{ color: 'var(--retro-tan)' }}>Connecting...</h1>
       </div>
     );
   }
@@ -421,22 +381,17 @@ const ChatRoom = () => {
   }
 
   return (
-    <div className="retro-landing relative min-h-screen w-full overflow-hidden">
-      {/* CRT Scanlines Effect */}
-      <div className="scanlines fixed inset-0 pointer-events-none z-50"></div>
-      
-      {/* Retro Grid Background */}
-      <div className="retro-grid fixed inset-0 opacity-20"></div>
-      
-      {/* Animated Background Gradient */}
-      <div className="retro-bg fixed inset-0"></div>
-
-      {/* Main chat room container */}
-      <div className="relative z-10 flex flex-col items-center justify-start text-amber-100 min-h-screen w-full">
-        {/* Hidden audio element for remote audio stream */}
+    <div className="relative min-h-screen w-full font-sans retro-texture overflow-x-hidden" style={{ backgroundColor: 'var(--retro-black)', maxWidth: '100vw' }}>
+      <div
+        className="flex flex-col items-center justify-start text-white min-h-screen w-full retro-texture overflow-x-hidden"
+        style={{
+          backgroundImage: "linear-gradient(rgba(26,26,26,0.95), rgba(45,27,14,0.98))",
+          backgroundPosition: "center",
+          maxWidth: '100vw'
+        }}
+      >
         <audio ref={remoteAudioRef} autoPlay playsInline />
 
-        {/* Call UI overlay - shown when in active call */}
         {isInCall && (
           <CallUI
             isVisible={isInCall}
@@ -448,231 +403,160 @@ const ChatRoom = () => {
           />
         )}
 
-        {/* Incoming call notification banner */}
         {isReceivingCall && (
           <div className="fixed inset-x-0 top-6 flex justify-center z-50 pointer-events-none">
-            {/* Incoming call notification container */}
-            <div className="pointer-events-auto retro-glass bg-black/60 backdrop-blur-sm border-2 border-amber-300/50 px-4 py-3 rounded-full flex items-center gap-4 shadow-lg">
-              {/* Caller info section */}
+            <div className="pointer-events-auto retro-card px-4 py-3 flex items-center gap-4 retro-texture">
               <div className="flex items-center gap-3">
-                {/* Caller name and label container */}
                 <div className="flex flex-col">
-                  <span className="text-sm text-amber-200 font-semibold font-mono">
-                    INCOMING CALL
+                  <span className="text-sm retro-text font-semibold" style={{ color: 'var(--retro-tan)' }}>
+                    Incoming call
                   </span>
-                  <span className="text-xs text-amber-200/70 font-mono">
-                    {callerInfo?.username || "UNKNOWN"}
+                  <span className="text-xs retro-text" style={{ color: 'var(--retro-beige)' }}>
+                    {callerInfo?.username || "Unknown"}
                   </span>
                 </div>
               </div>
-              {/* Call action buttons (Answer/Decline) */}
               <div className="flex items-center gap-3">
                 <button
                   onClick={answerCall}
-                  className="retro-btn-primary px-4 py-2 text-sm font-mono"
+                  className="retro-button px-3 py-2 text-sm"
+                  style={{ backgroundColor: 'var(--retro-red-brown)' }}
                 >
-                  ANSWER
+                  Answer
                 </button>
                 <button
                   onClick={declineCall}
-                  className="bg-amber-800/80 hover:bg-amber-900/80 border-2 border-amber-600 text-amber-100 px-4 py-2 rounded-md text-sm font-semibold font-mono transition-colors"
+                  className="retro-button px-3 py-2 text-sm"
+                  style={{ backgroundColor: '#a0522d', borderColor: '#654321' }}
                 >
-                  DECLINE
+                  Decline
                 </button>
               </div>
             </div>
           </div>
         )}
 
-        {/* Floating Navbar */}
-        <nav className="floating-navbar fixed top-4 z-40 w-[95%] max-w-6xl">
-          <div className="retro-glass backdrop-blur-md bg-black/40 border-2 border-amber-300/50 rounded-lg px-6 py-3 shadow-[0_0_20px_rgba(217,119,6,0.3)] min-h-[3rem] flex items-center">
-            <div className="flex items-center justify-between w-full relative">
-              {/* Left side - Logo and Room ID */}
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  <img src="/phantom-logo.png" alt="Phantom" className="w-6 h-6" />
-                  <h1
-                    onClick={() => navigate("/")}
-                    className="text-amber-200 font-bold text-lg tracking-wider retro-text cursor-pointer select-none"
-                    title="Go to homepage"
-                  >
-                    PHANTOM
-                  </h1>
-                </div>
-                {/* Room ID badge */}
-                <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-amber-800/20 border border-amber-300/30 rounded-full">
-                  <span className="text-xs text-amber-200/80 font-mono">
-                    {roomId?.substring(0, 8) || "GROUP"}
-                  </span>
-                </div>
+        <header className="static  w-full py-6 max-w-3xl">
+          <div className="absolute hidden inset-x-0 top-2 sm:flex justify-center pointer-events-none">
+            <div className="pointer-events-auto retro-card px-4 py-2 flex items-center gap-3 retro-texture">
+              <h2 className="text-sm retro-text font-semibold tracking-wide" style={{ color: 'var(--retro-tan)' }}>
+                {roomId || "Group Chat"}
+              </h2>
+              <div className="px-2 py-1 text-xs retro-text rounded-full" style={{ backgroundColor: 'var(--retro-red-brown)', color: 'var(--retro-tan)' }}>
+                {onlineUsers.length} online
               </div>
+            </div>
+          </div>
 
-              {/* Right side - User count and dropdown */}
-              <div className="flex items-center gap-4">
-                {/* Online users count */}
-                <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-amber-800/20 border border-amber-300/30 rounded-full">
-                  <FiUsers className="w-4 h-4 text-amber-200" />
-                  <span className="text-sm text-amber-200 font-mono">{onlineUsers.length}</span>
-                </div>
+          <div className="px-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <h1
+                onClick={() => navigate("/")}
+                className="retro-title text-lg cursor-pointer select-none"
+                title="Go to homepage"
+                role="button"
+              >
+                Phantom
+              </h1>
+            </div>
 
-                {/* User list toggle and dropdown */}
-                <div className="relative">
+            <button
+              onClick={() => setIsUserListVisible(!isUserListVisible)}
+              className="flex items-center space-x-2 retro-text transition-colors"
+              style={{ color: 'var(--retro-tan)' }}
+            >
+              <FiUsers className="w-6 h-6" />
+              <span className="text-sm">{onlineUsers.length}</span>
+            </button>
+          </div>
+        </header>
+
+        {/* User List Modal - Fixed Position */}
+        {isUserListVisible && (
+          <>
+            <div 
+              className="fixed inset-0 z-40"
+              onClick={() => setIsUserListVisible(false)}
+              style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
+            ></div>
+            <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none px-4">
+              <div 
+                className="w-full max-w-md retro-card retro-texture py-4 pointer-events-auto"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="px-6 py-3 flex items-center justify-between border-b mb-2" style={{ borderColor: 'var(--retro-red-brown)' }}>
+                  <p className="retro-text-sm font-semibold" style={{ color: 'var(--retro-tan)' }}>
+                    Online Users
+                  </p>
                   <button
-                    ref={userListButtonRef}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setIsUserListVisible(!isUserListVisible);
-                    }}
-                    className="retro-btn-secondary px-4 py-2 text-sm flex items-center gap-2"
+                    onClick={() => setIsUserListVisible(false)}
+                    className="retro-text-xs px-2 py-1 rounded-full hover:opacity-80 transition-opacity"
+                    style={{ backgroundColor: 'var(--retro-red-brown)', color: 'var(--retro-tan)' }}
                   >
-                    <FiUsers className="w-4 h-4" />
-                    <span className="font-mono">USERS</span>
+                    {onlineUsers.length}
                   </button>
                 </div>
+
+                <div className="max-h-[60vh] overflow-y-auto no-scrollbar px-2">
+                  {onlineUsers.map((user) => (
+                    <button
+                      key={user.id}
+                      onClick={() => setIsUserListVisible(false)}
+                      className="w-full text-left px-4 py-3 flex items-center gap-3 hover:opacity-80 transition-opacity rounded-lg mb-1"
+                      style={{ backgroundColor: 'rgba(139, 69, 19, 0.1)' }}
+                    >
+                      <div className="w-10 h-10 rounded-full flex items-center justify-center retro-text-sm retro-texture flex-shrink-0" style={{ backgroundColor: 'var(--retro-dark)', border: '2px solid var(--retro-red-brown)', color: 'var(--retro-tan)' }}>
+                        {user.username
+                          ? user.username.charAt(0).toUpperCase()
+                          : "?"}
+                      </div>
+
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="retro-text-sm font-medium truncate" style={{ color: 'var(--retro-tan)' }}>
+                            {user.username}
+                            {user.id === socket.id && " (You)"}
+                          </span>
+                          {user.id !== socket.id && !isInCall && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                startCall(user);
+                                setIsUserListVisible(false);
+                              }}
+                              className="retro-button p-2 flex-shrink-0"
+                              aria-label={`Call ${user.username}`}
+                            >
+                              <FiPhone className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
+                        <div className="retro-text-xs truncate mt-1" style={{ color: 'var(--retro-beige)' }}>
+                          {user.status || "Available"}
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-          
-          {/* Dropdown user list - positioned outside navbar container */}
-          {isUserListVisible && (
-            <div 
-              ref={userListRef}
-              className="fixed w-64 retro-card bg-black/80 backdrop-blur-sm border-2 border-amber-300/50 rounded-2xl shadow-lg py-2 z-[60]"
-              style={{
-                right: `${dropdownPosition.right}px`,
-                top: `${dropdownPosition.top}px`,
-                maxWidth: 'calc(95vw - 2rem)'
-              }}
-            >
-                      {/* User list header */}
-                      <div className="px-4 py-2 flex items-center justify-between border-b border-amber-300/20">
-                        <p className="text-xs text-amber-200 font-semibold font-mono">
-                          ONLINE USERS
-                        </p>
-                        <span className="text-xs bg-amber-800/30 text-amber-300 px-2 py-1 rounded-full font-mono">
-                          {onlineUsers.length}
-                        </span>
-                      </div>
+          </>
+        )}
 
-                      {/* Scrollable user list container */}
-                      <div className="max-h-64 overflow-y-auto no-scrollbar">
-                        {onlineUsers.map((user) => (
-                          <button
-                            key={user.id}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                            }}
-                            className="w-full text-left px-4 py-2 flex items-center gap-3 hover:bg-amber-900/20 transition-colors"
-                          >
-                            {/* User avatar circle */}
-                            <div className="w-8 h-8 rounded-full bg-amber-300/10 border-2 border-amber-300/40 flex items-center justify-center text-sm text-amber-200">
-                              {user.username
-                                ? user.username.charAt(0).toUpperCase()
-                                : "?"}
-                            </div>
-
-                            {/* User info section */}
-                            <div className="flex-1">
-                              {/* Username and call button row */}
-                              <div className="flex items-center justify-between">
-                                <span className="text-sm text-amber-100 font-medium font-mono">
-                                  {user.username}
-                                  {user.id === socket.id && " (YOU)"}
-                                </span>
-                                {/* Call button for other users */}
-                                {user.id !== socket.id && !isInCall && (
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      startCall(user);
-                                      setIsUserListVisible(false);
-                                    }}
-                                    className="bg-amber-600/80 hover:bg-amber-700/80 border border-amber-400 text-amber-100 p-2 rounded-md transition-colors"
-                                    aria-label={`Call ${user.username}`}
-                                  >
-                                    <FiPhone className="w-4 h-4" />
-                                  </button>
-                                )}
-                              </div>
-                              {/* User status */}
-                              <div className="text-xs text-amber-200/60 font-mono">
-                                {user.status || "AVAILABLE"}
-                              </div>
-                            </div>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-        </nav>
-
-        {/* Spacer for navbar */}
-        <div className="h-24"></div>
-
-        {/* Main chat panel container */}
-        <div className="chat-panel w-full max-w-3xl">
-          {/* Chat room banner with room info and share button */}
-          <div className="retro-card mb-6 rounded-xl shadow-inner bg-black/60 border-2 border-amber-300/50 p-4 flex items-center justify-between">
-            {/* Room info section */}
-            <div>
-              <h3 className="text-xl font-semibold text-amber-200 font-mono">
-                {roomId || "GROUP CHAT"}
-              </h3>
-              <p className="text-xs text-amber-200/70 font-mono">
-                {onlineUsers.length} ONLINE • ONE-TIME END-TO-END ENCRYPTED CHATS
-              </p>
-            </div>
-            {/* Share button container */}
-            <div className="flex items-center gap-2">
-              <button
-                onClick={async () => {
-                  const shareData = {
-                    title: document.title,
-                    text: `Join me in ${roomId || "this chat"}`,
-                    url: window.location.href,
-                  };
-                  try {
-                    if (navigator.share) {
-                      await navigator.share(shareData);
-                      toast.success("Shared successfully");
-                    } else {
-                      await navigator.clipboard.writeText(window.location.href);
-                      toast.success("Room link copied to clipboard");
-                    }
-                  } catch (err) {
-                    try {
-                      await navigator.clipboard.writeText(window.location.href);
-                      toast.success("Room link copied to clipboard");
-                    } catch (e) {
-                      toast.error("Could not share link");
-                    }
-                  }
-                }}
-                className="retro-btn-secondary text-sm px-3 py-2 font-mono"
-              >
-                SHARE
-              </button>
-            </div>
-          </div>
-          {/* Messages container wrapper */}
+        <div className="chat-panel w-full max-w-3xl retro-texture">
           <div className="w-full flex justify-center">
-            {/* Scrollable messages container */}
             <main
               ref={messageContainerRef}
-              className="flex-grow w-full p-4 pb-2 overflow-y-auto no-scrollbar"
-              style={{ height: 'calc(100vh - 26rem)' }}
+              className="flex-grow w-full p-4 pb-24 h-[calc(100vh-240px)] overflow-y-auto no-scrollbar"
             >
-              {/* Loading indicator for chat history */}
               {loadingMessages && (
                 <div className="flex justify-center items-center py-4">
-                  <div className="text-amber-200/60 text-sm font-mono">
-                    LOADING CHAT HISTORY...
+                  <div className="retro-text text-sm" style={{ color: 'var(--retro-beige)' }}>
+                    Loading chat history...
                   </div>
                 </div>
               )}
 
-              {/* Messages list */}
               {messages.map((msg, index) => {
                 const isFirstNewMessage =
                   index > 0 &&
@@ -682,17 +566,15 @@ const ChatRoom = () => {
 
                 return (
                   <div key={index}>
-                    {/* Divider between old and new messages */}
                     {isFirstNewMessage && (
                       <div className="flex items-center my-6">
-                        <div className="flex-grow border-t border-amber-300/30"></div>
-                        <div className="px-4 text-xs text-amber-200/60 bg-black font-mono">
-                          NEW MESSAGES
+                        <div className="flex-grow border-t" style={{ borderColor: 'var(--retro-red-brown)' }}></div>
+                        <div className="px-4 text-xs retro-text" style={{ color: 'var(--retro-beige)', backgroundColor: 'var(--retro-black)' }}>
+                          New Messages
                         </div>
-                        <div className="flex-grow border-t border-amber-300/30"></div>
+                        <div className="flex-grow border-t" style={{ borderColor: 'var(--retro-red-brown)' }}></div>
                       </div>
                     )}
-                    {/* Individual message container */}
                     <div
                       className={`mb-4 flex ${
                         msg.sender === username
@@ -700,9 +582,7 @@ const ChatRoom = () => {
                           : "justify-start"
                       }`}
                     >
-                      {/* Message bubble wrapper */}
                       <div className={`max-w-xs md:max-w-md`}>
-                        {/* Message sender and timestamp row */}
                         <div
                           className={`flex items-center gap-2 mb-1 ${
                             msg.sender === username
@@ -710,11 +590,11 @@ const ChatRoom = () => {
                               : "justify-start"
                           }`}
                         >
-                          <p className={`text-xs text-amber-200/70 font-mono`}>
-                            {msg.sender === username ? "YOU" : msg.sender.toUpperCase()}
+                          <p className={`text-xs retro-text`} style={{ color: 'var(--retro-beige)' }}>
+                            {msg.sender === username ? "You" : msg.sender}
                           </p>
                           {msg.timestamp && (
-                            <p className="text-xs text-amber-200/50 font-mono">
+                            <p className="text-xs retro-text" style={{ color: 'var(--retro-beige)' }}>
                               {new Date(msg.timestamp).toLocaleTimeString([], {
                                 hour: "2-digit",
                                 minute: "2-digit",
@@ -722,17 +602,16 @@ const ChatRoom = () => {
                             </p>
                           )}
                         </div>
-                        {/* Message bubble with content */}
                         <div
                           className={`px-4 py-2 rounded-4xl ${
                             msg.sender === username
-                              ? "bg-amber-600/80 border-2 border-amber-400/50 rounded-br-xl"
+                              ? "bg-purple-600 rounded-br-xl"
                               : msg.isOldMessage
-                              ? "bg-black/40 border-2 border-amber-300/30 rounded-bl-xl"
-                              : "bg-black/60 border-2 border-amber-300/40 rounded-bl-xl"
+                              ? "bg-gray-700 rounded-bl-xl"
+                              : "bg-gray-800 rounded-bl-xl "
                           }`}
                         >
-                          <p className="break-words text-amber-100 font-mono">{msg.content}</p>
+                          <p className="break-words retro-text" style={{ fontSize: '1.05rem', lineHeight: '1.6' }}>{msg.content}</p>
                         </div>
                       </div>
                     </div>
@@ -740,11 +619,10 @@ const ChatRoom = () => {
                 );
               })}
 
-              {/* Empty state when no messages */}
               {!loadingMessages && messages.length === 0 && (
                 <div className="flex justify-center items-center py-8">
-                  <div className="text-amber-200/60 text-sm font-mono">
-                    NO MESSAGES YET. START THE CONVERSATION!
+                  <div className="retro-text text-sm" style={{ color: 'var(--retro-beige)' }}>
+                    No messages yet. Start the conversation!
                   </div>
                 </div>
               )}
@@ -752,38 +630,33 @@ const ChatRoom = () => {
           </div>
         </div>
 
-        {/* Fixed footer with message input */}
-        <footer className="pb-4 pt-2 px-6 fixed inset-x-0 bottom-0">
-          {/* Footer content wrapper */}
+        <footer className="p-4 fixed inset-x-0 bottom-0">
           <div className="footer-centered">
-            {/* Input container wrapper */}
             <div className="w-full max-w-3xl">
-              {/* Message input and send button container */}
-              <div className="flex items-center gap-3 retro-glass bg-black/60 backdrop-blur-sm border-2 border-amber-300/50 rounded-3xl p-2">
+              <div className="flex items-center gap-3 retro-card p-2 retro-texture">
                 <input
                   type="text"
                   aria-label="Message input"
                   value={currentMessage}
-                  placeholder="TYPE A MESSAGE..."
+                  placeholder="Type a message..."
                   onChange={(e) => setCurrentMessage(e.target.value)}
                   onKeyPress={(e) => e.key === "Enter" && sendMessage()}
-                  className="flex-grow retro-input bg-black/40 placeholder-amber-200/50 text-amber-100 focus:outline-none px-4 h-11 rounded-full border-2 border-amber-300/50 leading-tight font-mono"
+                  className="retro-input flex-grow px-4 h-11 rounded-full leading-tight"
                 />
 
-                {/* Send message button */}
                 <button
                   onClick={sendMessage}
                   aria-label="Send"
-                  className="w-11 h-11 rounded-full bg-amber-600/80 hover:bg-amber-700/80 border-2 border-amber-400 text-amber-100 flex items-center justify-center transition-shadow shadow-md"
+                  className="w-11 h-11 rounded-full retro-button flex items-center justify-center"
+                  style={{ backgroundColor: 'var(--retro-red-brown)' }}
                 >
-                  <FiSend className="w-4.5 h-4.5" />
+                  <FiSend className="w-4.5 h-4.5" style={{ color: 'var(--retro-tan)' }} />
                 </button>
               </div>
             </div>
           </div>
         </footer>
 
-        {/* Spacer div for footer */}
         <div className="h-8" />
       </div>
     </div>

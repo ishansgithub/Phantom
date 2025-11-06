@@ -11,42 +11,39 @@ const UsernameModal = ({ onSubmit }) => {
   };
 
   return (
-    <div className="retro-landing fixed inset-0 z-50 flex items-center justify-center">
-      {/* CRT Scanlines Effect */}
-      <div className="scanlines fixed inset-0 pointer-events-none"></div>
-      
-      {/* Retro Grid Background */}
-      <div className="retro-grid fixed inset-0 opacity-20"></div>
-      
-      {/* Animated Background Gradient */}
-      <div className="retro-bg fixed inset-0"></div>
-
-      {/* Modal Content */}
-      <div className="relative z-10 w-full max-w-sm px-4">
-        <div className="retro-card">
-          <form onSubmit={handleSubmit} className="text-center">
-            <h2 className="text-amber-200 text-2xl md:text-3xl font-bold mb-8 retro-text">
-              WHAT SHOULD WE CALL YOU?
-            </h2>
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="ENTER USERNAME..."
-              className="retro-input w-full px-4 py-3 mb-6 text-center text-amber-100 placeholder-amber-200/50 text-lg"
-              autoFocus
-            />
-            {/* Submit button to join chat */}
-            <button
-              type="submit"
-              disabled={!username.trim()}
-              className="retro-btn-primary w-full py-3 text-sm tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              JOIN CHAT ROOM
-            </button>
-          </form>
-        </div>
-      </div>
+    <div 
+      className="fixed inset-0 retro-texture z-50 font-sans" 
+      style={{ 
+        backgroundColor: 'rgba(26,26,26,0.95)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '100vh'
+      }}
+    >
+      <form 
+        onSubmit={handleSubmit} 
+        className="w-full max-w-sm px-4 text-center retro-card p-8 retro-texture"
+      >
+        <h2 className="retro-title mb-8" style={{ color: 'var(--retro-tan)', fontSize: '2rem' }}>What should we call you?</h2>
+        <input
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          placeholder="Enter a username..."
+          className="retro-input w-full px-4 py-4 mb-6 text-center rounded-full transition-all"
+          style={{ fontSize: '1.2rem' }}
+          autoFocus
+        />
+        <button
+          type="submit"
+          disabled={!username.trim()}
+          className="retro-button w-full px-4 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
+          style={{ backgroundColor: !username.trim() ? '#654321' : 'var(--retro-tan)', color: 'var(--retro-black)', borderColor: 'var(--retro-dark-brown)' }}
+        >
+          Join Chat Room
+        </button>
+      </form>
     </div>
   );
 };

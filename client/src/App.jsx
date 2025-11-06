@@ -10,19 +10,21 @@ function App() {
 
   return (
     <>
-    {/* Main app container */}
-    <div className='bg-gray-900 h-full w-full min-h-screen min-w-screen'>
-      {/* Toast notification system */}
+    <div className='h-full w-full min-h-screen overflow-x-hidden retro-texture' style={{ backgroundColor: 'var(--retro-black)', maxWidth: '100vw' }}>
       <Toaster
         position="bottom-right"
         toastOptions={{
           style: {
-            background: '#000',
-            color: '#fff',
+            background: 'var(--retro-dark)',
+            color: 'var(--retro-tan)',
+            border: '2px solid var(--retro-red-brown)',
+            boxShadow: '4px 4px 0px var(--retro-dark-brown)',
+            fontFamily: "'Bebas Neue', 'Orbitron', 'VT323', sans-serif",
+            letterSpacing: '0.06em',
+            fontSize: '1rem',
           },
         }}
       />
-      {/* Router for navigation between pages */}
       <BrowserRouter>   
         <Routes>
           <Route path="/" element={<Home />} />
