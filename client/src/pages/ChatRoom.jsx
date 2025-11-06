@@ -437,17 +437,6 @@ const ChatRoom = () => {
         )}
 
         <header className="static  w-full py-6 max-w-3xl">
-          <div className="absolute hidden inset-x-0 top-2 sm:flex justify-center pointer-events-none">
-            <div className="pointer-events-auto retro-card px-4 py-2 flex items-center gap-3 retro-texture">
-              <h2 className="text-sm retro-text font-semibold tracking-wide" style={{ color: 'var(--retro-tan)' }}>
-                {roomId || "Group Chat"}
-              </h2>
-              <div className="px-2 py-1 text-xs retro-text rounded-full" style={{ backgroundColor: 'var(--retro-red-brown)', color: 'var(--retro-tan)' }}>
-                {onlineUsers.length} online
-              </div>
-            </div>
-          </div>
-
           <div className="px-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <h1
@@ -545,6 +534,16 @@ const ChatRoom = () => {
 
         <div className="chat-panel w-full max-w-3xl retro-texture">
           <div className="w-full flex justify-center">
+            <div className="w-full flex justify-center mb-2">
+              <div className="retro-card px-4 py-2 flex items-center gap-3 retro-texture">
+                <h2 className="text-sm retro-text font-semibold tracking-wide" style={{ color: 'var(--retro-tan)' }}>
+                  {roomId || "Group Chat"}
+                </h2>
+                <div className="px-2 py-1 text-xs retro-text rounded-full" style={{ backgroundColor: 'var(--retro-red-brown)', color: 'var(--retro-tan)' }}>
+                  {onlineUsers.length} online
+                </div>
+              </div>
+            </div>
             <main
               ref={messageContainerRef}
               className="flex-grow w-full p-4 pb-24 h-[calc(100vh-240px)] overflow-y-auto no-scrollbar"
