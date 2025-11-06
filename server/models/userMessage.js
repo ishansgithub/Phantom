@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const UserMessageSchema = new mongoose.Schema({
     sender: { 
-        ref: 'User', 
+        type: String,
         required: true 
     },
     content: { 

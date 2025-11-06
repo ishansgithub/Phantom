@@ -1,68 +1,392 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@import "tailwindcss";
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+:root{
+  background-color: #000;
+}
+html, body {
+  background-color: #000;
+  /* Hide scrollbars */
+  overflow-x: hidden;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+html::-webkit-scrollbar, body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+  width: 0;
+  height: 0;
 }
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+.no-scrollbar::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* Retro Landing Page Styles */
+
+/* CRT Scanlines Effect */
+.scanlines {
+  background: linear-gradient(
+    transparent 50%,
+    rgba(217, 119, 6, 0.03) 50%
+  );
+  background-size: 100% 4px;
+  animation: scanline 8s linear infinite;
+  pointer-events: none;
+  opacity: 0.5;
 }
 
-button {
+/* Vintage Texture Overlay */
+.scanlines::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.15),
+      rgba(0, 0, 0, 0.15) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+  pointer-events: none;
+}
+
+@keyframes scanline {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 100%;
+  }
+}
+
+/* Retro Grid Background */
+.retro-grid {
+  background-image: 
+    linear-gradient(rgba(217, 119, 6, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(217, 119, 6, 0.08) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: grid-move 20s linear infinite;
+}
+
+@keyframes grid-move {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(50px, 50px);
+  }
+}
+
+/* Animated Background Gradient */
+.retro-bg {
+  background: linear-gradient(
+    135deg,
+    #000000 0%,
+    #1a0f0f 25%,
+    #2a1815 50%,
+    #1a0f0f 75%,
+    #000000 100%
+  );
+  background-size: 400% 400%;
+  animation: gradient-shift 15s ease infinite;
+  position: relative;
+}
+
+/* Vintage Grain Texture */
+.retro-bg::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='4' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.4'/%3E%3C/svg%3E");
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Floating Navbar */
+.floating-navbar {
+  left: 50%;
+  transform: translateX(-50%);
+  animation: float-nav 3s ease-in-out infinite;
+}
+
+@keyframes float-nav {
+  0%, 100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-5px);
+  }
+}
+
+.retro-glass {
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    inset 0 0 0 1px rgba(217, 119, 6, 0.3),
+    0 0 30px rgba(217, 119, 6, 0.2);
+  border-color: rgba(217, 119, 6, 0.4) !important;
+}
+
+/* Retro Text Effects */
+.retro-text {
+  text-shadow: 
+    0 0 10px rgba(217, 119, 6, 0.6),
+    0 0 20px rgba(217, 119, 6, 0.4),
+    0 0 30px rgba(217, 119, 6, 0.2),
+    2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.retro-text-glow {
+  text-shadow: 
+    0 0 5px rgba(217, 119, 6, 0.8),
+    0 0 10px rgba(217, 119, 6, 0.6),
+    0 0 15px rgba(217, 119, 6, 0.4),
+    0 0 20px rgba(217, 119, 6, 0.3),
+    2px 2px 4px rgba(0, 0, 0, 0.9);
+  animation: text-flicker 3s infinite;
+}
+
+@keyframes text-flicker {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.95;
+  }
+}
+
+/* Retro Title */
+.retro-title {
+  color: #D4C5A9;
+  font-family: 'Times New Roman', serif;
+  letter-spacing: 0.05em;
+  text-shadow: 
+    2px 2px 4px rgba(0, 0, 0, 0.8),
+    0 0 10px rgba(217, 119, 6, 0.4),
+    0 0 20px rgba(217, 119, 6, 0.2);
+}
+
+@keyframes gradient-text {
+  to {
+    background-position: 200% center;
+  }
+}
+
+/* Retro Buttons */
+.retro-btn-primary {
+  background: linear-gradient(135deg, #D4C5A9, #C9A876);
+  border: 2px solid #8B4A3C;
+  color: #1a0f0f;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 0 10px rgba(217, 119, 6, 0.4),
+    inset 0 0 10px rgba(255, 255, 255, 0.2),
+    2px 2px 4px rgba(0, 0, 0, 0.5);
+  position: relative;
+  overflow: hidden;
+  font-family: 'Times New Roman', serif;
+}
+
+.retro-btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: left 0.5s;
+}
+
+.retro-btn-primary:hover::before {
+  left: 100%;
+}
+
+.retro-btn-primary:hover {
+  box-shadow: 
+    0 0 20px rgba(217, 119, 6, 0.6),
+    inset 0 0 15px rgba(255, 255, 255, 0.3),
+    2px 2px 6px rgba(0, 0, 0, 0.7);
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #E8DCC0, #D4C5A9);
+}
+
+.retro-btn-primary:active {
+  transform: translateY(0);
+}
+
+.retro-btn-secondary {
+  background: transparent;
+  border: 2px solid #8B4A3C;
+  color: #D4C5A9;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(217, 119, 6, 0.2);
+  font-family: 'Times New Roman', serif;
+}
+
+.retro-btn-secondary:hover {
+  background: rgba(139, 74, 60, 0.2);
+  box-shadow: 0 0 20px rgba(217, 119, 6, 0.4);
+  transform: translateY(-2px);
+  border-color: #A0522D;
+}
+
+.retro-btn-secondary:active {
+  transform: translateY(0);
+}
+
+/* Retro Input */
+.retro-input {
+  background: rgba(26, 15, 15, 0.8);
+  border: 2px solid #8B4A3C;
+  border-radius: 4px;
+  color: #D4C5A9;
+  outline: none;
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 0 10px rgba(217, 119, 6, 0.2),
+    inset 0 0 10px rgba(0, 0, 0, 0.3),
+    2px 2px 4px rgba(0, 0, 0, 0.5);
+  font-family: 'Courier New', monospace;
+}
+
+.retro-input:focus {
+  border-color: #A0522D;
+  box-shadow: 
+    0 0 20px rgba(217, 119, 6, 0.4),
+    inset 0 0 15px rgba(0, 0, 0, 0.4),
+    2px 2px 6px rgba(0, 0, 0, 0.7);
+  background: rgba(26, 15, 15, 0.9);
+}
+
+.retro-input::placeholder {
+  color: rgba(212, 197, 169, 0.5);
+}
+
+/* Retro Card */
+.retro-card {
+  background: rgba(26, 15, 15, 0.85);
+  border: 2px solid #8B4A3C;
   border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  padding: 2rem;
+  box-shadow: 
+    0 0 30px rgba(217, 119, 6, 0.3),
+    inset 0 0 30px rgba(0, 0, 0, 0.3),
+    2px 2px 8px rgba(0, 0, 0, 0.6);
+  position: relative;
+  overflow: hidden;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+.retro-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(217, 119, 6, 0.05),
+    transparent
+  );
+  animation: card-shine 3s infinite;
+}
+
+@keyframes card-shine {
+  0% {
+    transform: rotate(0deg);
   }
-  a:hover {
-    color: #747bff;
+  100% {
+    transform: rotate(360deg);
   }
-  button {
-    background-color: #f9f9f9;
+}
+
+/* Retro Rooms Container */
+.retro-rooms-container {
+  border-top: 2px solid rgba(139, 74, 60, 0.4);
+  padding-top: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.retro-room-item {
+  background: rgba(139, 74, 60, 0.1);
+  border: 1px solid rgba(139, 74, 60, 0.4);
+  border-radius: 4px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.3s ease;
+  margin-bottom: 0.5rem;
+}
+
+.retro-room-item:hover {
+  background: rgba(139, 74, 60, 0.2);
+  border-color: #8B4A3C;
+  box-shadow: 0 0 10px rgba(217, 119, 6, 0.3);
+  transform: translateX(5px);
+}
+
+/* Fade In Animation */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 1s ease-out;
+}
+
+/* Retro Footer */
+.retro-footer {
+  border-top: 1px solid rgba(139, 74, 60, 0.3);
+  padding-top: 1rem;
+}
+
+/* Retro Subtitle */
+.retro-subtitle {
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.1em;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Remove gradient text animation */
+@keyframes gradient-text {
+  to {
+    background-position: 200% center;
   }
 }

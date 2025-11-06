@@ -1,42 +1,48 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+.chat-panel{
+	background: rgba(26, 15, 15, 0.85);
+	border: 2px solid rgba(217, 119, 6, 0.4);
+	padding: 20px;
+	border-radius: 16px;
+	box-shadow: 
+		0 6px 30px rgba(217, 119, 6, 0.3),
+		inset 0 1px 0 rgba(217, 119, 6, 0.1);
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.chat-banner{
+	height: 120px;
+	background: linear-gradient(180deg, rgba(217, 119, 6, 0.1), rgba(0,0,0,0.4));
+	border-radius: 10px;
+	border: 2px solid rgba(217, 119, 6, 0.3);
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.chat-panel .px-4.py-2.rounded-4xl{
+	font-size: 14px;
+	line-height: 1.35;
+	color: #D4C5A9;
+	max-width: 100%;
+	box-shadow: 0 6px 18px rgba(217, 119, 6, 0.3);
+	font-family: 'Courier New', monospace;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.chat-panel .bg-purple-600{
+	background: linear-gradient(180deg, rgba(217, 119, 6, 0.8), rgba(184, 83, 6, 0.8));
+	border-radius: 18px 18px 6px 18px !important;
+	border: 2px solid rgba(217, 119, 6, 0.5) !important;
 }
 
-.card {
-  padding: 2em;
+.chat-panel .bg-gray-800,
+.chat-panel .bg-gray-700{
+	background: rgba(26, 15, 15, 0.6);
+	border-radius: 18px 18px 18px 6px !important; 
+	border: 2px solid rgba(217, 119, 6, 0.3) !important;
 }
 
-.read-the-docs {
-  color: #888;
+.chat-panel .text-xs.text-gray-500,
+.chat-panel .text-xs.text-gray-600{
+	color: rgba(212, 197, 169, 0.6) !important;
+}
+
+.footer-centered{
+	display:flex;
+	justify-content:center;
 }
